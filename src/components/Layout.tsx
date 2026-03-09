@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
+import SetUsername from "./SetUsername";
 
 const navItems = [
   {
@@ -32,21 +34,24 @@ const navItems = [
 
 export default function Layout() {
   const location = useLocation();
+  const [formUsername, setFormUsername] = useState<boolean>(false);
   const isScanner = location.pathname === "/scanner";
+  const setForm = ()=>setFormUsername(!formUsername)
 
   return (
     <div className="min-h-screen bg-[#f1f5f9] flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      {formUsername && <SetUsername onSave={undefined} onClose={setForm}/>}
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
       {/* Top bar */}
       {!isScanner && (
         <header className="bg-white border-b border-[#e2e8f0] px-5 py-3.5 flex items-center justify-between sticky top-0 z-10 shadow-sm shadow-[#2563eb08]">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-[#2563eb] rounded-lg flex items-center justify-center">
+            <button onClick={setForm} className="w-7 h-7 bg-[#2563eb] rounded-lg flex items-center ease-in duration-75 hover:cursor-pointer justify-center">
               <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </div>
+            </button>
             <span className="text-[#0f172a] font-semibold text-sm tracking-tight">Attandnisme</span>
           </div>
           <div className="flex items-center gap-1.5">

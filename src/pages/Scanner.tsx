@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Html5Qrcode } from "html5-qrcode";
 import { BACKEND_URL } from "../environment";
+import SetUsername from "../components/SetUsername";
 
 type ScanState = "idle" | "scanning" | "process" | "success" | "error";
 
 export default function Scanner() {
   const navigate = useNavigate();
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  const [username, setUsername] = useState<string|null>(localStorage.getItem('username'));
   const [state, setState] = useState<ScanState>("idle");
   const [result, setResult] = useState("");
   const [facing, setFacing] = useState<"environment" | "user">("environment");
@@ -78,10 +80,17 @@ export default function Scanner() {
 
   const reset = () => { setState("idle"); setResult(""); };
 
-  useEffect(() => { return () => { stop(); }; }, []);
+  useEffect(() => { 
+    if(!username) return
+    return () => { 
+      stop(); 
+    }; 
+  }, [username]);
 
   return (
+    <>
     <div className="fixed inset-0 bg-[#0f172a] flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      {!username && <SetUsername onSave={setUsername} onClose={undefined} />}
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
 
       {/* Top bar */}
@@ -209,5 +218,6 @@ export default function Scanner() {
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import SetUsername from "../components/SetUsername.tsx";
 import { WS_URL as ws } from "../environment.ts";
 
 type WsStatus = "connecting" | "connected" | "disconnected";
@@ -18,7 +17,6 @@ const wsLabels: Record<WsStatus, string> = {
 };
 
 export default function QRCode() {
-	const [username, setUsername] = useState(localStorage.getItem("username"));
   const [qrImage, setQrImage] = useState<string | null>(null);
   const [wsStatus, setWsStatus] = useState<WsStatus>("disconnected");
   const wsRef = useRef<WebSocket | null>(null);
@@ -28,7 +26,6 @@ export default function QRCode() {
   const qrImageRef = useRef<string | null>(null);
 
   useEffect(() => {
-		if (!username) return;
     let isMounted = true;
 		if (!isMounted) return;
     const connect = () => {
@@ -65,7 +62,6 @@ export default function QRCode() {
       wsRef.current?.close();
       if (qrImageRef.current) URL.revokeObjectURL(qrImageRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const manualReconnect = () => {
@@ -75,7 +71,6 @@ export default function QRCode() {
 
   return (
 		<>
-		{!username && <SetUsername onSave={setUsername} />}
     <div className="max-w-md mx-auto px-4 pt-6">
 
       {/* Header */}
